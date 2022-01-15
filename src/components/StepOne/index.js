@@ -65,6 +65,7 @@ export default function StepOne() {
             control={control}
             render={({ field }) => (
               <Select
+                size='small'
                 defaultValue={1}
                 sx={{ width: 100 }}
                 {...register('attendees')}
