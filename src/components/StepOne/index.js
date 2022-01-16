@@ -12,24 +12,26 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import React, { useContext } from "react";
 
 import { AppContext } from '../../context';
+import ErrorText from '../Common/ErrorText';
 import { useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+
+const validationSchema = Yup.object().shape({
+  attendees: Yup.number().required(),
+  candidates: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required('Name is required'),
+    })
+  )
+});
 
 export default function StepOne() {
   const { handleNext } = useContext(AppContext)
 
-  const validationSchema = Yup.object().shape({
-    attendees: Yup.number().required(),
-    candidates: Yup.array().of(
-      Yup.object().shape({
-        name: Yup.string().required('Name is required'),
-      })
-    )
+  const { register, control, handleSubmit, watch, formState: { errors }, } = useForm({
+    resolver: yupResolver(validationSchema)
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
-
-  const { register, control, handleSubmit, watch } = useForm(formOptions);
   const { fields, append, remove } = useFieldArray({ name: 'candidates', control });
 
   const attendees = watch('attendees');
@@ -99,6 +101,7 @@ export default function StepOne() {
                 {...register(`candidates.${i}.name`)}
               />}
             />
+            {errors.candidates?.[i]?.name && <ErrorText text={'Name required'} />}
           </Box>
         ))}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

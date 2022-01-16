@@ -1,26 +1,32 @@
+import * as yup from "yup";
+
 import { Button, TextField, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import React, { useContext } from 'react';
 
 import { AppContext } from '../../context';
 import { Box } from '@mui/system';
+import ErrorText from "../Common/ErrorText";
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const validationSchema = yup.object({
+  companyName: yup.string().required('Required field'),
+  companyNameString: yup.string().when('companyName', {
+    is: "Yes",
+    then: yup.string().required('Company name is required')
+  }),
+  accommodations: yup.string().required('Required field'),
+}).required();
 
 export default function StepTwo() {
   const { handleNext } = useContext(AppContext)
 
-  const {
-    register,
-    watch,
-    handleSubmit,
-    control,
-  } = useForm({
-    defaultValues: {
-      companyName: '',
-    },
+  const { register, watch, handleSubmit, formState: { errors }, control } = useForm({
+    resolver: yupResolver(validationSchema)
   });
 
   const companyName = watch("companyName");
@@ -42,19 +48,21 @@ export default function StepTwo() {
             name="companyName"
             render={({ field }) => {
               return (
-                <RadioGroup row {...field}>
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
-                  <FormControlLabel
-                    value="No"
-                    control={<Radio />}
-                    label="No"
-                  />
-
-                </RadioGroup>
+                <Box>
+                  <RadioGroup row {...field}>
+                    <FormControlLabel
+                      value="Yes"
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value="No"
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                  <ErrorText text={errors.companyName?.message} />
+                </Box>
               );
             }}
           />
@@ -75,6 +83,7 @@ export default function StepTwo() {
                 {...register('companyNameString')}
               />}
             />
+            <ErrorText text={errors.companyNameString?.message} />
           </Box>
         }
         <FormControl component="fieldset" sx={{ mt: 4 }}>
@@ -87,19 +96,21 @@ export default function StepTwo() {
             name="accommodations"
             render={({ field }) => {
               return (
-                <RadioGroup row {...field}>
-                  <FormControlLabel
-                    value="Yes"
-                    control={<Radio />}
-                    label="Yes"
-                  />
-                  <FormControlLabel
-                    value="No"
-                    control={<Radio />}
-                    label="No"
-                  />
-
-                </RadioGroup>
+                <Box>
+                  <RadioGroup row {...field}>
+                    <FormControlLabel
+                      value="Yes"
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value="No"
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                  <ErrorText text={errors.accommodations?.message} />
+                </Box>
               );
             }}
           />
