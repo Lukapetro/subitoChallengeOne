@@ -2,6 +2,8 @@
 
 This project was created as a challenge for subito.it
 
+You can run it on [Github Pages](https://lukapetro.github.io/subitoChallengeOne/)
+
 ## Installation
 
 Clone the project
